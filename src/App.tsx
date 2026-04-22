@@ -1,121 +1,88 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { FormEvent, useState } from "react";
+import { Loader, Placeholder } from "@aws-amplify/ui-react";
+import "./App.css";
+import "@aws-amplify/ui-react/styles.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [result, setResult] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(event.currentTarget);
+    const ingredients = formData.get("ingredients")?.toString() || "";
+
+    setTimeout(() => {
+      setResult(
+        `Generated recipe for: ${ingredients || "your ingredients"}
+
+Creamy Garlic Pasta
+
+Ingredients:
+- Pasta
+- Garlic
+- Butter
+- Heavy cream
+- Parmesan
+- Salt
+- Black pepper
+
+Instructions:
+1. Boil the pasta until tender.
+2. Sauté garlic in butter over medium heat.
+3. Stir in heavy cream and parmesan.
+4. Add the cooked pasta and mix well.
+5. Season with salt and black pepper, then serve warm.`
+      );
+      setLoading(false);
+    }, 1800);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app-container">
+      <div className="header-container">
+        <h1 className="main-header">
+          Hello Aymen Beshir Meet Your Personal
+          <br />
+          <span className="highlight">Recipe AI</span>
+        </h1>
+        <p className="description">
+          Simply type a few ingredients using the format ingredient1, ingredient2, etc., and Recipe AI will generate an all-new recipe on demand...
+        </p>
+      </div>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      <form onSubmit={onSubmit} className="form-container">
+        <div className="search-container">
+          <input
+            type="text"
+            className="wide-input"
+            id="ingredients"
+            name="ingredients"
+            placeholder="Ingredient1, Ingredient2, Ingredient3,...etc"
+          />
+          <button type="submit" className="search-button">
+            Generate
+          </button>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      </form>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <div className="result-container">
+        {loading ? (
+          <div className="loader-container">
+            <p>Loading...</p>
+            <Loader size="large" />
+            <Placeholder size="large" />
+            <Placeholder size="large" />
+            <Placeholder size="large" />
+          </div>
+        ) : (
+          result && <p className="result">{result}</p>
+        )}
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
